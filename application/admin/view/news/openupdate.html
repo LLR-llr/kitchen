@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新闻添加</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<body>
+<form class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">新闻标题</label>
+        <div class="layui-input-block">
+            <input lay-verify="required|nname" type="text" name="wname" placeholder="新闻标题" autocomplete="off" class="layui-input" value="{$news[0]['wname']}">
+            <input type="hidden" name="id"  value="{$news[0]['id']}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新闻作者</label>
+        <div class="layui-input-block">
+            <input lay-verify="required|nname" type="text" name="wwriter" placeholder="新闻作者" autocomplete="off" class="layui-input" value="{$news[0]['wwriter']}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详情</label>
+        <div class="layui-input-block">
+            <textarea  id="edetail"  style="display: none">{$news[0]['wcontent']}</textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+<script>
+    layui.use(['form','upload','layer','layedit'],function(){
+        // let form=layui.form,$=layui.$,layer=layui.layer,upload=layui.upload;
+        let {$,form,upload,layer,layedit}=layui;
+        var layEdit= layedit.build('edetail',{
+            height:200,
+        });
+
+        form.on('submit(*)',function (data) {
+            $da=data.field;
+            delete $da.file;
+            $da.wcontent=layedit.getContent(layEdit);  //获取富文本编辑器的内容，带标签
+            $.ajax({
+                type:'POST',
+                data:$da,
+                url:'/thinkphp/public/admin/news/update',
+                dataType:'json',
+                success:function (res) {
+                    let {code,msg}=res;
+                    if(code===200){
+                        layer.alert(msg);
+                        location.href="/thinkphp/public/admin/news/index"
+                    } else{
+                        layer.alert(msg)
+                    }
+                }
+            })
+            return false;
+        })
+
+
+
+    })
+</script>

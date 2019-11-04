@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分类查看</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<body>
+<table id="demo" lay-filter="test"></table>
+<a href="#hidden" class="btn layui-btn-danger bianji" style="padding:5px;color:white">添加</a>
+<form class="layui-form" id="hidden" style="display: none"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品名称</label>
+        <div class="layui-input-block">
+            <input lay-verify="required" type="text" name="cname" placeholder="请输入6-10位字符" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+    </div>
+</form>
+
+</body>
+</html>
+<script src="__JS_PATH__jquery-3.4.1.min.js"></script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    const HOSTNAME='/thinkphp/public/index.php/';
+    layui.use(['table','form'],function () {
+        let table=layui.table,$=layui.$,layer=layui.layer,form=layui.form;
+        let trender=table.render({
+            elem:'#demo',
+            cols:[[
+                {field:'cid',title:'ID'},
+                {field:'cname',title:'分类名称', edit: 'text'},
+                {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]],
+            url:HOSTNAME+"/admin/cate/query"
+        })
+        table.on('tool(test)', function(obj){
+            // console.log(obj)
+            $da=obj.data.cid;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    layer.close(index);
+                    $da=obj.data.cid;
+                    $.ajax({
+                        type:'POST',
+                        data:{id:$da},
+                        url:HOSTNAME+'admin/cate/delete',
+                        dataType:'json',
+                        success:function (res) {
+                            if(res.code===200){
+                                layer.alert(res.msg)
+                                obj.del();
+                            } else{
+                                layer.alert(res.msg)
+                            }
+                        }
+                    })
+                });
+            }
+        });
+        form.on('submit(*)',function (data) {
+            $data=data.field;
+            let form=data.form;
+            $.ajax({
+                type:'POST',
+                url:'/thinkphp/public/admin/cate/insert',
+                data:$data,
+                dataType:'json',
+                context:this,
+                success:function(res){
+                    if(res.code===200){
+                        form.reset();
+                        $('#hidden').css('display','none');
+                        trender.reload();
+                        alert(res.msg)
+                    }else{
+                        alert(res.msg)
+                    }
+                }
+            });
+            return false;
+        })
+    });
+
+
+</script>
+
+<script>
+    $('.bianji').on('click',function () {
+        $('#hidden').css('display','block')
+    })
+
+
+</script>

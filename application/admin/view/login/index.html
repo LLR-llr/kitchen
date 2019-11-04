@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<style>
+    html{
+        width: 100%;
+        height: 100%;
+    }
+    body{
+        width: 100%;
+        height: 100%;
+        background: url("/thinkphp/public/static/images/timg.jpg"),center;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+    form{
+        width: 350px;
+        height: 260px;
+    }
+    .formborder{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: 480px;
+        height: 360px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0,0,0,0.2);
+        border-radius: 20px;
+    }
+</style>
+<body>
+<div class="formborder">
+<form class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <div class="layui-form-item">
+        <label class="layui-form-label">输入用户名</label>
+        <div class="layui-input-block">
+            <input lay-verify="" type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">输入密码</label>
+        <div class="layui-input-block">
+            <input lay-verify="" type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-block">
+            <div><img src="{:captcha_src()}" alt="captcha" width="180px" height="50px" onclick="this.src=this.src+'?a='+Date.now()"/></div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">输入验证码</label>
+        <div class="layui-input-block">
+            <input type="text" name="code" autocomplete="off" class="layui-input" placeholder="验证码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+
+        </div>
+    </div>
+</form>
+</div>
+</body>
+</html>
+<script>
+    layui.use(['form','layer'],function () {
+        let layer=layui.layer,form=layui.form,$=layui.$;
+        form.on('submit(*)',function (data) {
+            $.ajax({
+                url:'/thinkphp/public/admin/login/check',
+                type:'POST',
+                data:data.field,
+                dataType:'json',
+                success:function (res) {
+                    if(res.code===200){
+                        location.replace('/thinkphp/public/admin/main/index')
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+</script>

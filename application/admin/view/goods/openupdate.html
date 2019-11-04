@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>商品编辑</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<body>
+<form class="layui-form"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">商品名称</label>
+        <div class="layui-input-block">
+            <input lay-verify="required|nname" type="text" name="name" placeholder="请输入6-10位字符" autocomplete="off" class="layui-input" value="{$result[0]['name']}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">市场价</label>
+        <div class="layui-input-block">
+            <input lay-verify="required|number" type="number" name="mprice" placeholder="请输入市场价" autocomplete="off" class="layui-input" value="{$result[0]['mprice']}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">零售价</label>
+        <div class="layui-input-block">
+            <input lay-verify="required|number" type="number" name="sale" placeholder="请输入零售价" autocomplete="off" class="layui-input" value="{$result[0]['sale']}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">库存</label>
+        <div class="layui-input-block">
+            <input lay-verify="required|nubmer" type="number" name="stock" placeholder="请输入库存" autocomplete="off" class="layui-input" value="{$result[0]['stock']}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">缩略图</label>
+        <div class="layui-input-block">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="thumb1">缩略图上传</button>
+                <span>上传图片最佳比例：1*1，最大补偿200KB</span>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    预览图：
+                    <!--<div class="layui-upload-list" id="demo2"></div>-->
+                    <input type="hidden" id="thumbh" name="thumb">
+                    <img src="{$result[0]['thumb']}" alt="" width="50" height="50" id="thumb">
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">轮播图</label>
+        <div class="layui-input-block">
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="banner">轮播图上传</button>
+                <span>上传图片最佳比例：1*1，最大补偿200KB</span>
+                <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+                    预览图：
+
+                    <div class="layui-upload-list" id="demo3">
+                        {volist name="arr" id="val"}
+                        <img src="{$val}" alt="" width="100px" height="100px">
+                        {/volist}
+                    </div>
+
+                    <input type="hidden" id="bannerh" name="banner">
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详情</label>
+        <div class="layui-input-block">
+            <textarea  id="edetail"  style="display: none">{result[0]['detail']}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="*">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+<script>
+    layui.use(['form','upload','layer','layedit'],function(){
+        // let form=layui.form,$=layui.$,layer=layui.layer,upload=layui.upload;
+        let {$,form,upload,layer,layedit}=layui;
+        var layEdit= layedit.build('edetail',{
+            height:200,
+        });
+
+        var uploadInst = upload.render({
+            elem: '#thumb1'     /*根据绑定id，打开本地图片*/
+            ,url: '/thinkphp/public/index.php/admin/upload/index'  /*上传后台接受接口*/
+            ,accept:'images'
+            ,acceptMime:'image/*'
+            ,size:200
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }else{
+                    $('#thumb').attr('src','');
+                    $('#thumb').attr('src',res.data.src);
+                    $('#thumbh').val(res.data.src);
+                }
+            }
+        });
+        $str='';
+        var uploadInst2 = upload.render({
+            elem: '#banner'     /*根据绑定id，打开本地图片*/
+            ,url: '/thinkphp/public/index.php/admin/upload/index'  /*上传后台接受接口*/
+            ,accept:'images'
+            ,acceptMime:'image/*'
+            ,multiple: true
+            ,number:5
+            ,size:200
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }else{
+                    $('#demo3').html('');
+                    // $('<img>').attr('src',res.data.src).css('width',100).appendTo('#demo3');
+                    $('#demo3').append('<img src="'+ res.data.src+'" alt="" width="100" height="100">');
+                    // $str =$str+res.data.src+',';
+                    // $('#bannerh').val($str);
+                    $('#bannerh').val((index,val)=>val+res.data.src+',')
+                }
+            }
+        });
+
+
+        form.on('submit(*)',function (data) {
+            let form=data.form;
+            $da=data.field;
+            delete $da.file;
+            $da.banner=$da.banner.slice(0,-1);
+            $da.detail=layedit.getContent(layEdit);  //获取富文本编辑器的内容，带标签
+            $.ajax({
+                type:'POST',
+                data:$da,
+                url:'/thinkphp/public/admin/goods/update',
+                dataType:'json',
+                success:function (res) {
+                    let {code,msg}=res;
+                    if(code===200){
+                        layer.alert(msg)
+                        form.reset();
+                        $('input[type=hidden]').val('');
+                        $('#thumb').attr('src','');
+                        $('#banner>img').remove();//删掉图片  remove() 方法
+                    } else{
+                        layer.alert(msg)
+                    }
+                }
+            })
+            return false;
+        })
+
+        // form.verify({
+        //     nname:function (value,item) {
+        //         if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+        //             return '用户名不能有特殊字符';
+        //         }
+        //         if(/(^\_)|(\__)|(\_+$)/.test(value)){
+        //             return '用户名首尾不能出现下划线\'_\'';
+        //         }
+        //         if(/^\d+\d+\d$/.test(value)){
+        //             return '用户名不能全为数字';
+        //         }
+        //     },
+        //     ename:[
+        //         /^[a-zA-Z][a-zA-Z\s].*[a-zA-Z]$/,
+        //         "格式错误"
+        //     ],
+        //
+        //     ntpl:[
+        //         /^[a-zA-Z].*(.html)$/,
+        //             "请以.html结尾"
+        //     ]
+        // })
+
+    })
+</script>

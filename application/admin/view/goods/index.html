@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品查看</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<style>
+    .layui-table-cell {
+        height: inherit;
+    }
+
+</style>
+<body>
+<form class="layui-form">
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">所属分类</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select name="cid" lay-verify="">
+                    <option value="">请选择一个城市</option>
+                    {volist name="cate" id="val" }
+                    <option value="{$val.cid}">{$val.cname}</option>
+                    {/volist}
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">商品名称</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="gname" placeholder="￥" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <div class="layui-form-mid">零售范围</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price_min" placeholder="￥" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <button class="layui-btn" lay-submit lay-filter="search">搜索</button>
+        </div>
+    </div>
+</form>
+
+<table id="demo" lay-filter="test"></table>
+
+
+</body>
+</html>
+<script type="text/html" id="bannerTpl">
+    {{# let arr=d.banner.split(',')}}
+    {{# arr.forEach(ele=>{ }}
+        <img src="{{ele}}">
+   {{# })}}
+</script>
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    const HOSTNAME='/thinkphp/public/index.php/';
+    layui.use(['table'],function () {
+        let table=layui.table,$=layui.$,layer=layui.layer,form=layui.form;
+        // layer.open({
+        //     type: 2,
+        //     title: "新建预设配置项", //标题栏
+        //     area: ["300px","300px"]
+        //     // ,content: "这里是拖拽弹出层"//这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+        //     ,moveType: 1 //拖拽模式，0或者1
+        //     ,shade: 0
+        // });
+
+
+        let tableIns=table.render({
+            elem:'#demo',
+            cols:[[
+                {field:'gid',title:'ID'},
+                {field:'name',title:'商品名称'},
+                {field:'mprice',title:'市场价'},
+                {field:'sale',title:'零售价'},
+                {field:'stock',title:'库存'},
+                {field:'thumb',title:'缩略图',templet:function(d){
+                        return "<img src='"+d.thumb+"'>"
+                    }},
+                {field:'banner',title:'轮播图',templet:'#bannerTpl'},
+                {field:'detail',title:'详情'},
+                {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]],
+            url:HOSTNAME+"admin/goods/query"
+            ,page:true
+            ,limit:3
+        })
+        table.on('tool(test)', function(obj){
+            $da=obj.data.gid;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    layer.close(index);
+                    $da=obj.data.gid;
+                    $.ajax({
+                        type:'POST',
+                        data:{id:$da},
+                        url:HOSTNAME+'admin/goods/delete',
+                        dataType:'json',
+                        success:function (res) {
+                            if(res.code===200){
+                                layer.alert(res.msg)
+                                obj.del();
+                            } else{
+                                layer.alert(res.msg)
+                            }
+                        }
+                    })
+                });
+            }
+            if(obj.event === 'edit'){
+                let id=obj.data.gid;
+                location.href=HOSTNAME+'admin/goods/openupdate?id='+id;
+            }
+        });
+
+        // table.on('edit(test)',function (obj) {
+        //
+        // })
+
+        form.on('submit(search)',function (data) {
+            let field=data.field;
+            tableIns.reload({
+                where: field
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            })
+            return false;
+        })
+    })
+
+
+
+</script>

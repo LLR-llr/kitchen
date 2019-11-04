@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爱旅行网站管理系统</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<style>
+
+.layui-tab{
+    width: 100%;
+    height: calc(100% - 20px);
+    position: relative;
+}
+    .layui-tab>.layui-tab-content{
+        width: 100%;
+        position: absolute;
+        top: 41px;
+        bottom: 0;
+    }
+.layui-tab>.layui-tab-content>.layui-tab-item{
+    height: 100%;
+}
+    iframe{
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
+<body>
+
+
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    {$user['username']}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退出</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">导航管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="1-1" data-url="/thinkphp/public/admin/nav/openinsert"><a href="javascript:;">导航添加</a></dd>
+                        <dd data-id="1-2" data-url="/thinkphp/public/admin/nav/index"><a href="javascript:;">导航查看</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品分类</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="2-1" data-url="/thinkphp/public/admin/cate/index"><a href="javascript:;">分类查看</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">商品管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="3-1" data-url="/thinkphp/public/admin/goods/openinsert"><a href="javascript:;">商品添加</a></dd>
+                        <dd data-id="3-2" data-url="/thinkphp/public/admin/goods/index"><a href="javascript:;">商品查看</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">新闻管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="4-1" data-url="/thinkphp/public/admin/news/openinsert"><a href="javascript:;">新闻添加</a></dd>
+                        <dd data-id="4-2" data-url="/thinkphp/public/admin/news/index"><a href="javascript:;">新闻查看</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">服务管理</a>
+                    <dl class="layui-nav-child">
+                        <dd data-id="5-1" data-url="/thinkphp/public/admin/service/openinsert"><a href="javascript:;">服务添加</a></dd>
+                        <dd data-id="5-2" data-url="/thinkphp/public/admin/service/index"><a href="javascript:;">服务查看</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;height: 100%;width: 100%;box-sizing: border-box">
+
+            <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
+                <ul class="layui-tab-title">
+                    <!--<li class="layui-this" lay-id="1-1">导航添加</li>-->
+                </ul>
+                <div class="layui-tab-content">
+                    <!--<div class="layui-tab-item layui-show">内容1</div>-->
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+
+
+
+
+</body>
+</html>
+<script>
+
+    layui.use(['layer','element'],function(){
+        var $ = layui.jquery,layer=layui.layer
+            ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+        //触发事件
+        $('dd').on('click', function(){
+            let flag=false;
+            // let arr=[];
+
+            let layId=this.dataset.id;//获取id   $(this).data(''id)
+
+            $text=$(this).text();//获取文本
+            // $text=$(this).children('a').text();
+            // $text=$('a',this).text();
+
+            let $layId= $('.layui-tab-title>li');
+
+
+            // for($i=0;$i<$layId.length;$i++){
+            //     let str=$($layId[$i]).attr('lay-id');
+            //     // $layId[$i].getAttribute('lay-id')
+            //     // $layId[$i].attributes[1].nodeValue;
+            //
+            //     if(layId==str) {
+            //          flag=true;
+            //     }
+            //     // arr.push(str);
+            // }
+
+            let arr=$layId.map(function(index,ele){
+                return ele.getAttribute('lay-id')
+            })
+            // flag=Array.from(arr).some(ele=>ele==layId);
+            flag=Array.prototype.some.call(arr,ele=>ele==layId)
+
+
+            // function bijiao() {
+            //     for($j=0;$j<arr.length;$j++){
+            //         if(layId==arr[$j]) {
+            //             return $flag=0;
+            //         }
+            //     }return $flag=1;
+            //
+            // }
+            // bijiao();
+
+            if(!flag){
+                // flag=1;
+                let urls=this.dataset.url;
+                element.tabAdd('demo', {
+                    title: $text //用于演示
+                    , content: `
+                        <iframe src="${urls}" frameborder="0" ></iframe>
+                     `
+                    , id: layId //实际使用一般是规定好的id，这里以时间戳模拟下
+                })
+            }else{
+                // flag=0;
+                element.tabChange('demo', layId);
+            }
+        });
+
+
+
+
+        //Hash地址的定位
+        // var layid = location.hash.replace(/^#test=/, '');
+        // element.tabChange('test', layid);
+        //
+        // element.on('tab(test)', function(elem){
+        //     location.hash = 'test='+ $(this).attr('lay-id');
+        // });
+
+    })
+
+
+</script>

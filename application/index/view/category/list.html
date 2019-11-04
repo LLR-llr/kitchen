@@ -1,0 +1,70 @@
+{include file="public/header" /}
+    <link rel="stylesheet" href="__CSS_PATH__list.css">
+
+
+<!-- <div style=" height:1400px;background:cadetblue; "></div> -->
+<div class=" container ">
+    <!-- 头部轮播开始 -->
+    <div class=" banner ">
+        <div class=" banner-img ">
+            <img src=" __IMG_PATH__img/2.png " alt=" ">
+        </div>
+    </div>
+</div>
+<!-- 头部轮播结束 -->
+<!-- 关于开始 -->
+<div class=" container line-both ">
+    <div class=" aboutus ">
+        <div class='line'></div>
+        <div class=" guanyu ">
+            <div class=" zhongwen ">产品中心</div>
+            <div class=" yingwen ">Products</div>
+        </div>
+        <div class=" line "></div>
+    </div>
+</div>
+<!-- 关于结束 -->
+<!-- 列表开始 -->
+<div class=" container ">
+    <div class=" index-product ">
+        <div class=" guide ">
+            <ul class=" guide-box ">
+                {volist name='cate' id="val"}
+                <li class=" guide-smbox ">
+                    {$val['cname']}&nbsp&nbsp|
+                </li>
+                {/volist}
+            </ul>
+            <div class=" contant-box ">
+            {volist name="cate" id="val"}
+            <div class=" contant {$val['cid']==-1?'':'active'}">
+                {volist name="val.goods" id="value"}
+                <a href="/thinkphp/public/index/category/index?cid={$val['cid']}&gid={$value['gid']}">
+                <div class=" contant-imgs ">
+                    <img src="{$value['thumb']}" alt=" ">
+                    <div class=" wenzis ">
+                        {$value['name']}
+                    </div>
+                    <div class=" prices ">
+                        ¥{$value['sale']}
+                        <span>起</span>
+                    </div>
+                </div>
+                </a>
+                {/volist}
+            </div>
+                {/volist}
+            </div>
+    </div>
+</div>
+</div>
+<!-- 列表结束 -->
+
+<!-- 箭头--置顶 -->
+<div class=" zhiding ">ʌ</div>
+</body>
+
+</html>
+<script src=" __JS_PATH__list.js "></script>
+<script src=" __JS_PATH__public.js "></script>
+    {include file="public/footer" /}

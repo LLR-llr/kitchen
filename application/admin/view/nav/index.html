@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>导航查看</title>
+    <link rel="stylesheet" href="/thinkphp/public/static/css/layui.css">
+    <script src="/thinkphp/public/static/layui.js"></script>
+</head>
+<body>
+<table id="demo" lay-filter="test"></table>
+
+</body>
+</html>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script>
+    const HOSTNAME='/thinkphp/public/index.php/';
+    layui.use(['table'],function () {
+        let table=layui.table,$=layui.$,layer=layui.layer;
+        table.render({
+            elem:'#demo',
+            cols:[[
+                {field:'id',title:'ID'},
+                {field:'nname',title:'导航名称', edit: 'text'},
+                {field:'ename',title:'英文名称', edit: 'text'},
+                {field:'nsort',title:'排序', edit: 'text'},
+                {field:'ntpl',title:'模板', edit: 'text'},
+                {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]],
+            url:HOSTNAME+"/admin/nav/query"
+        })
+        table.on('tool(test)', function(obj){
+            // console.log(obj)
+          let $da=obj.data.id;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    layer.close(index);
+                    // let  $da=obj.data.id;
+                    $.ajax({
+                        type:'POST',
+                        data:{id:$da},
+                        url:HOSTNAME+'/admin/nav/delete',
+                        dataType:'json',
+                        success:function (res) {
+                            if(res.code==200){
+                                layer.alert(res.msg)
+                                obj.del();
+                            } else{
+                                layer.alert(res.msg)
+                            }
+                        }
+                    })
+                });
+            }
+        });
+
+        table.on('edit(test)',function (obj) {
+            let id=obj.data.id;
+            let field=obj.field;
+            let value=obj.value;
+            // let load=layer.open({
+            //     type:3,
+            //     title:'',
+            //     content:'正在删除'
+            // })
+            let load=layer.load(2);
+            $.ajax({
+                url:HOSTNAME+'/admin/nav/update',
+                data:{id,field,value},
+                type:'POST',
+                dataType:'json',
+                success:function (res) {
+                    if(res.code==200){
+                        layer.close(load);
+                        layer.alert(res.msg)
+                    }else{
+                        layer.alert(res.msg)
+                    }
+                }
+            })
+        })
+    })
+
+
+
+</script>

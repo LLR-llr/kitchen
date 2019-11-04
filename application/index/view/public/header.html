@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="__CSS_PATH__bootstrap.min.css">
+    <link rel="stylesheet" href="__CSS_PATH__animate.min.css">
+
+    <link rel="stylesheet" href="__CSS_PATH__public.css">
+
+    <title>爱旅行首页</title>
+</head>
+
+<body>
+<!-- 导航开始 -->
+<!-- 顶部导航 开始 -->
+<nav>
+    <div class="nav-box">
+        <div class="navl">
+            <img src="__IMG_PATH__common/logo.png" alt="">
+        </div>
+        <ul class="navr navr1">
+            <li class="index zo" id='index'><a style="color:{$cid==0?'#ff6000':'#777777'}" href="/thinkphp/public/index/index/index">首页</a>
+            </li>
+
+            {volist name="nav" id="val"}
+            <li class='zo' >
+                <a style="color:{$val['id']==$cid?'#ff6000':'#777777'}" href="/thinkphp/public/index/category/index?cid={$val['id']}">
+                {$val['nname']}
+                </a>
+            </li>
+            {/volist}
+        </ul>
+    </div>
+</nav>
+<!-- 顶部导航 结束 -->
+<!-- 屏幕滚动出现 开始 -->
+<nav class="xiala-nav">
+    <div class="nav-box">
+        <div class="navl">
+            <img src="__IMG_PATH__common/logo.png" alt="">
+        </div>
+        <ul class="navr navr2">
+            <li class="index zo" ><a style="color:{$cid==0?'#ff6000':'#777777'}" href="/thinkphp/public/index/index/index">首页</a>
+            </li>
+
+            {volist name="nav" id="val"}
+            <li class='zo' >
+                <a style="color:{$val['id']==$cid?'#ff6000':'#777777'}" href="/thinkphp/public/index/category/index?cid={$val['id']}">
+                    {$val['nname']}
+                </a>
+            </li>
+            {/volist}
+        </ul>
+    </div>
+</nav>
+<!-- 屏幕滚动出现 结束 -->
+<!-- 屏幕缩小后出现的下拉列表 开始 -->
+<a href="#">
+    <div class="nav-list">
+        <div class="shouy">首页</div>
+        <div class="shouy-xiala">∨</div>
+    </div>
+</a>
+<ul class="xialakuang" style="display: none;">
+    <li class="index zo" ><a style="color:{$cid==0?'#ff6000':'#777777'}" href="/thinkphp/public/index/index/index">首页</a>
+    </li>
+
+    {volist name="nav" id="val"}
+    <li class='zo' >
+        <a style="color:{$val['id']==$cid?'#ff6000':'#777777'}" href="/thinkphp/public/index/category/index?cid={$val['id']}">
+            {$val['nname']}
+        </a>
+    </li>
+    {/volist}
+</ul>
+<!-- 屏幕缩小后出现的下拉列表 结束 -->
+
+<!-- 导航结束 -->
